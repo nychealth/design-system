@@ -1,0 +1,280 @@
+/*
+ * @nychealth/design-system — tokens.css
+ *
+ * Reconciled from two source projects:
+ *   - community-health-profiles  (globals.css — clean semantic --color-* layer)
+ *   - respiratory-virus-data-pages (tokens.css — grayscale, component aliases)
+ *
+ * WHO EDITS THIS FILE
+ * ───────────────────
+ * • UI colors (surfaces, text, borders, header/footer/card chrome) → edit here
+ * • Chart / sparkline / virus colors                               → edit tokens.js
+ *
+ * OPEN DECISION — needs design sign-off before v1.0.0:
+ *   CHP's brand blue (--color-brand) is #1d4ed8. RVP's brand blue (--blue-primary)
+ *   is #1E40AF. These are visibly different shades of blue. This file defaults to
+ *   CHP's value as canonical and aliases --blue-primary to it, which means RVP's
+ *   header gradient will shift slightly if/when RVP adopts this package. Flag to
+ *   whoever owns visual identity for the two products before publishing v1.0.0 —
+ *   until then, consider this a v0.x working draft.
+ */
+
+:root {
+  /* ---- Typography ---- */
+  --font-sans: "Inter", sans-serif;
+  --font-body: var(--font-sans);
+  --font-heading: var(--font-sans);
+  --font-bold: "Inter-Bold", sans-serif;
+
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  --font-size-label: 0.75rem;  /* 12px — CHP naming, UI chrome/badges/caps */
+  --font-size-body: 0.875rem;  /* 14px — CHP naming, card body/dropdowns */
+  --font-size-md: 16px;
+  --font-size-read: 1rem;      /* 16px — CHP naming, longer-form reading */
+  --font-size-lg: 18px;
+  --font-size-2xl: 20px;
+  --font-size-xl: 30px;
+  --font-size-mobile-header: 20px;
+  --line-height-lg: 1.5;
+
+  /* ---- Grayscale ---- */
+  --white: #FFFFFF;
+  --black: #000000;
+  --gray-100: #F9FAFB;
+  --gray-200: #F3F4F6;
+  --gray-300: #E5E7EB;
+  --gray-400: #D1D5DB;
+  --gray-500: #9CA3AF;
+  --gray-600: #6B7280;
+  --gray-700: #4B5563;
+  --gray-800: #374151;
+  --gray-900: #1F2937;
+  --gray-transparent: rgba(0, 0, 0, 0);
+  --footnote-gray: #536070; /* WCAG AA 4.5:1 on white */
+  --body-text: var(--gray-800);
+
+  /* ---- Brand & interaction (semantic layer, canonical) ---- */
+  --color-brand: #1d4ed8;          /* blue-700 — see OPEN DECISION above */
+  --color-action: #2563eb;         /* blue-600 — links, focus rings, CTAs */
+  --color-action-subtle: #eff6ff;  /* blue-50  — hover backgrounds */
+
+  /* Legacy palette aliases, kept so RVP components migrate without a rewrite */
+  --blue-primary: var(--color-brand);
+  --blue-secondary: var(--color-action);
+  --blue-accent: #0075FF;
+  --purple-primary: #5B21B6;
+  --purple-accent: #7C3AED;
+  --green-primary: #065F46;
+  --green-accent: #139D72;
+  --green-muted: #059669;
+  --green-trend: #057A55;
+  --orange-text: #91401A;
+  --orange-primary: #FF6600;
+  --orange-accent: #B36C31;
+  --orange-muted: #FF6C0B;
+  --red-primary: #B91C1C;
+  --red-accent: #DC2626;
+  --red-muted: #F87171;
+
+  /* ---- Surfaces / borders / text (CHP semantic layer) ---- */
+  --color-surface: var(--white);
+  --color-surface-raised: var(--gray-100);
+  --color-surface-inset: var(--gray-200);
+  --color-border: var(--gray-300);
+  --color-border-subtle: var(--gray-200);
+  --color-text-primary: var(--gray-900);
+  --color-text-secondary: var(--gray-700);
+  --color-text-tertiary: var(--gray-600);
+
+  /* ---- Health direction ----
+     Single source of truth for "is this trend good or bad" across both apps.
+     RVP's --trend-chip-* and --chip-* below now reference these. */
+  --color-health-better: #15803d;
+  --color-health-worse: #b91c1c;
+  --color-health-neutral: #4b5563;
+  --color-health-better-bg: #f0fdf4;
+  --color-health-worse-bg: #fef2f2;
+  --color-health-neutral-bg: #f9fafb;
+
+  /* Comparison highlight — must match tokens.js chart colors.
+     Confirmed consistent: CHP's --color-comparison (#d97706) already equals
+     RVP's --chip-inc-text, so no conflict to resolve here. */
+  --color-comparison: #d97706;
+
+  /* ---- Backgrounds ---- */
+  --bg-light-blue: #08519C26;
+  --bg-light-green: #00441A26;
+  --bg-light-orange: #F4C4A5;
+  --bg-light-purple: #4A148624;
+  --bg-muted-pink: #F4C4A5;
+  --bg-muted-purple: #F5F3FF;
+  --bg-muted-gray: #ADAEBC;
+
+  /* ---- Spacing / radius / shadow ---- */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 80px;
+  --spacing-3xl: 64px;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  /* ---- Component-level aliases (from RVP; CHP can adopt incrementally) ---- */
+
+  /* Footer */
+  --footer-bg: var(--gray-900);
+  --footer-text: var(--gray-400);
+  --footer-link: var(--gray-400);
+  --footer-link-hover: var(--gray-200);
+  --footer-border: var(--gray-800);
+  --footer-logo-filter: brightness(0) invert(1);
+
+  /* Header */
+  --header-bg: linear-gradient(90deg, var(--color-brand), var(--color-action));
+  --header-title-color: var(--white);
+  --header-subtitle-color: var(--white);
+  --header-button-border: var(--white);
+  --header-button-text: var(--white);
+  --header-button-active-bg: var(--white);
+  --header-button-active-text: var(--color-brand);
+
+  /* Modal */
+  --modal-bg: var(--white);
+  --modal-text: var(--gray-800);
+  --modal-title-color: var(--gray-900);
+  --modal-close: var(--gray-600);
+  --modal-close-hover: var(--gray-900);
+
+  /* Top bar */
+  --top-bar-bg: var(--white);
+  --top-bar-text: var(--color-brand);
+  --top-bar-border: var(--gray-300);
+  --top-bar-select-bg: var(--white);
+  --top-bar-select-text: var(--color-brand);
+  --top-bar-select-border: var(--gray-300);
+  --top-bar-logo-filter: none;
+  --top-bar-toggle-label: var(--gray-400);
+  --top-bar-slider-bg: #c0c7c9;
+  --top-bar-slider-knob: #ffffff;
+  --top-bar-slider-checked-bg: var(--color-brand);
+  --top-bar-slider-knob-checked: #302e2e;
+
+  /* Stat card / dashboard */
+  --card-bg: var(--gray-100);
+  --card-title-color: var(--gray-900);
+  --card-divider: var(--gray-600);
+  --card-label-color: var(--gray-700);
+  --card-trend-color: var(--gray-800);
+  --card-date-color: var(--gray-600);
+
+  /* Overview / explorer / page sections */
+  --overview-bg: var(--white);
+  --overview-title-color: var(--gray-900);
+  --overview-column-title-color: var(--gray-900);
+  --overview-text-color: var(--gray-700);
+  --overview-padding: var(--spacing-xl);
+  --overview-title-size: var(--font-size-xl);
+  --overview-title-font: var(--font-heading);
+  --overview-column-gap: var(--spacing-3xl);
+  --overview-page-bg: var(--gray-100);
+  --overview-section-bg: var(--white);
+  --overview-subtitle-color: var(--gray-700);
+  --overview-divider-color: var(--gray-300);
+  --overview-highlight-bg: var(--gray-100);
+  --overview-block-bg: var(--white);
+
+  --explorer-bg: var(--white);
+  --explorer-padding: var(--spacing-xl);
+  --explorer-container-padding: var(--spacing-2xl);
+  --explorer-title-color: var(--gray-900);
+  --explorer-title-size: var(--font-size-xl);
+  --explorer-title-font: var(--font-heading);
+  --explorer-description-color: var(--gray-700);
+  --explorer-description-size: var(--font-size-lg);
+  --explorer-description-font: var(--font-body);
+
+  --portal-section-bg: #F3F4F6;
+
+  /* Trend chips (general purpose) */
+  --chip-inc-text: var(--color-comparison);
+  --chip-inc-bg: #fff7ed;
+  --chip-dec-text: #16a34a;
+  --chip-dec-bg: var(--color-health-better-bg);
+  --chip-neutral-text: #6B6B6B;
+  --chip-neutral-bg: var(--gray-100);
+
+  /* Disease-context direction chips — up=bad=red, down=good=green.
+     Values reference --color-health-* so there's one source of truth. */
+  --trend-chip-inc-bg: #FCEBEB;
+  --trend-chip-inc-text: var(--color-health-worse);
+  --trend-chip-dec-bg: #E1F5EE;
+  --trend-chip-dec-text: var(--color-health-better);
+  --trend-chip-neutral-bg: #F1EFE8;
+  --trend-chip-neutral-text: #444441;
+
+  /* Info box */
+  --info-bg: var(--gray-100);
+  --info-title: var(--gray-900);
+  --info-text: var(--gray-700);
+  --info-shadow: 0px 1px 3px rgba(0, 0, 0, 0.05);
+
+  /* Chart container */
+  --chart-bg: var(--white);
+  --chart-title-color: var(--gray-900);
+  --chart-subtitle-color: var(--gray-700);
+  --chart-title-size: 24px;
+  --chart-subtitle-size: var(--font-size-md);
+
+  /* Content */
+  --content-bg: var(--white);
+  --content-title-color: var(--gray-900);
+  --content-subtitle-color: var(--gray-700);
+  --content-title-size: var(--font-size-lg);
+  --content-subtitle-size: var(--font-size-md);
+
+  /* Trends */
+  --trend-up-color: var(--color-health-worse);
+  --trend-down-color: var(--color-health-better);
+  --trend-neutral-color: var(--gray-900);
+  --trend-bg: var(--gray-300);
+  --trend-highlight-color: var(--gray-800);
+
+  --trend-summary-bg: var(--white);
+  --trend-summary-padding: var(--spacing-md);
+  --trend-title-color: var(--gray-900);
+  --trend-date-color: var(--gray-700);
+  --trend-status-color: var(--gray-800);
+  --trend-title-size: var(--font-size-lg);
+  --trend-date-size: var(--font-size-md);
+  --trend-status-size: var(--font-size-md);
+  --trend-title-font: var(--font-heading);
+  --trend-arrow-size: 18px;
+
+  /* About page */
+  --about-padding: var(--spacing-2xl);
+  --about-section-gap: var(--spacing-3xl);
+  --about-title-size: var(--font-size-xl);
+  --about-subtitle-size: var(--font-size-lg);
+  --info-card-bg: var(--gray-100);
+  --info-card-padding: var(--spacing-xl);
+
+  /* Vega tooltip */
+  --vgtt-bg: #ffffff;
+  --vgtt-fg: #111827;
+  --vgtt-border: #E5E7EB;
+  --vgtt-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+
+  /* Image filters */
+  --img-on-light-filter: none;
+  --img-on-light-shadow: none;
+  --img-filter: brightness(0) saturate(100%) contrast(200%);
+  --footer-img-filter: none;
+}

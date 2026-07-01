@@ -1,10 +1,37 @@
 {
   "name": "@nychealth/design-system",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Functional design system for web products built by the UDX team",
-  "main": "index.js",
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./tokens": "./tokens/index.js",
+    "./tokens.css": "./tokens/tokens.css",
+    "./theme.css": "./tokens/theme.css",
+    "./hooks": "./hooks/index.js",
+    "./components": "./components/index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "tokens",
+    "hooks",
+    "components",
+    "README.md"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "next": ">=13"
+  },
+  "dependencies": {
+    "react-markdown": "^9.0.0"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "repository": {
     "type": "git",

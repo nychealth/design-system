@@ -9,14 +9,24 @@
  * ───────────────────
  * • UI colors (surfaces, text, borders, header/footer/card chrome) → edit here
  * • Chart / sparkline / virus colors                               → edit tokens.js
+ * • A new app needs its own brand color                            → add a
+ *   [data-brand="..."] block near the bottom of this file, see BRAND VARIANTS
  *
- * OPEN DECISION — needs design sign-off before v1.0.0:
- *   CHP's brand blue (--color-brand) is #1d4ed8. RVP's brand blue (--blue-primary)
- *   is #1E40AF. These are visibly different shades of blue. This file defaults to
- *   CHP's value as canonical and aliases --blue-primary to it, which means RVP's
- *   header gradient will shift slightly if/when RVP adopts this package. Flag to
- *   whoever owns visual identity for the two products before publishing v1.0.0 —
- *   until then, consider this a v0.x working draft.
+ * BRAND VARIANTS
+ *   CHP's brand blue is #1d4ed8; RVP's is #1E40AF — visibly different shades.
+ *   Rather than pick one, both are kept as named variants: each app sets
+ *   data-brand="chp" | "rvp" (etc.) on its root element (<html> or a top-level
+ *   wrapper), and the matching [data-brand="..."] block below overrides
+ *   --color-brand for that subtree. Everything downstream (--header-bg,
+ *   --blue-primary, button/tab active states, etc.) already references
+ *   --color-brand via var(), so it repaints automatically — no per-component
+ *   changes needed. :root ships CHP's value as the fallback default for any
+ *   app that hasn't set data-brand yet.
+ *
+ *   Adding a new app: add one [data-brand="yourapp"] block with just the
+ *   vars that differ (usually just --color-brand, sometimes --color-action).
+ *   Don't fork tokens.css — extend this list instead, so the design system
+ *   stays the single place that knows every app's brand identity.
  */
 
 :root {
@@ -55,7 +65,9 @@
   --body-text: var(--gray-800);
 
   /* ---- Brand & interaction (semantic layer, canonical) ---- */
-  --color-brand: #1d4ed8;          /* blue-700 — see OPEN DECISION above */
+  --color-brand: #1d4ed8;          /* blue-700 — CHP's value, used as the fallback
+                                       default. See BRAND VARIANTS above and the
+                                       [data-brand] blocks below for per-app values. */
   --color-action: #2563eb;         /* blue-600 — links, focus rings, CTAs */
   --color-action-subtle: #eff6ff;  /* blue-50  — hover backgrounds */
 
@@ -278,3 +290,22 @@
   --img-filter: brightness(0) saturate(100%) contrast(200%);
   --footer-img-filter: none;
 }
+
+/* ==========================================================================
+   Brand variants — see BRAND VARIANTS note at the top of this file.
+   Apps opt in by setting data-brand="<name>" on <html> (or another root
+   wrapper). Only declare what actually differs from the :root default —
+   most apps will just need --color-brand.
+   ========================================================================== */
+[data-brand="chp"] {
+  --color-brand: #1d4ed8; /* same as the :root default; explicit for clarity */
+}
+
+[data-brand="rvp"] {
+  --color-brand: #1E40AF;
+}
+
+/* Add new apps here, e.g.:
+[data-brand="your-app"] {
+  --color-brand: #yourHex;
+} */

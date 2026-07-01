@@ -55,9 +55,44 @@ In your app's CSS entry point, **import tokens.css before theme.css**:
 @import "@nychealth/design-system/theme.css";
 ```
 
-`theme.css` requires Tailwind v4 (`@theme inline`). If an app is still on
-Tailwind v3, import `tokens.css` only and map colors manually in
-`tailwind.config.js` via `theme.extend`.
+`theme.css` requires Tailwind v4 (`@theme inline`). Both CHP and RVP are
+already on v4, but via different patterns: CHP is CSS-first (`@theme inline`
+only), while RVP still loads a JS `tailwind.config.js` via `@config` for its
+`theme.extend.colors` block. Tailwind v4 merges both sources, so RVP can add
+the two imports above alongside its existing `@config` line without
+conflict — but once it does, the color mappings inside
+`tailwind.config.js` (`blue-primary`, `gray-100`, etc.) become redundant
+with `theme.css` and should be deleted to avoid two sources of truth for
+the same utility classes.
+
+### Brand variants
+
+Different apps use different brand blues (CHP `#1d4ed8`, RVP `#1E40AF`), and
+more apps are expected to join this design system over time, so brand color
+is handled as a named variant inside `tokens.css` rather than a value each
+app forks locally. Set `data-brand` on your app's root element:
+
+```jsx
+// e.g. CHP's root layout
+<html data-brand="chp">
+```
+
+```jsx
+// e.g. RVP's root layout
+<html data-brand="rvp">
+```
+
+`tokens.css` has a `[data-brand="chp"]` / `[data-brand="rvp"]` block that
+overrides `--color-brand` for that subtree. Everything else (`--header-bg`,
+`--blue-primary`, button/tab active states, etc.) already references
+`--color-brand` via `var()`, so it repaints automatically — no per-component
+changes needed. An app that doesn't set `data-brand` falls back to the
+`:root` default (CHP's value).
+
+**Adding a new app:** add one `[data-brand="yourapp"] { --color-brand: ...; }`
+block to `tokens.css` in this repo — don't fork the file. If a future app
+needs more than just its brand blue to differ (e.g. its own `--color-action`),
+add those vars to its block too, following the same pattern.
 
 ### Tokens (JS — charts, Vega specs)
 
@@ -93,16 +128,11 @@ each app, and pass the resolved string in as `content`.
 
 ## Open decisions (resolve before v1.0.0)
 
-- **Brand color conflict.** CHP's `--color-brand` is `#1d4ed8`; RVP's
-  `--blue-primary` was `#1E40AF`. `tokens.css` currently defaults to CHP's
-  value and aliases `--blue-primary` to it. This means RVP's header
-  gradient will shift slightly once RVP adopts this package. Needs a call
-  from whoever owns visual identity for both products.
-- **Tailwind version.** RVP is currently on Tailwind v3; `theme.css` in
-  this package assumes v4. RVP needs to migrate before it can use
-  `theme.css` (it can still use `tokens.css` standalone in the meantime).
-  This is a Tailwind-version gap only — both apps are Next.js, so no
-  framework migration is needed for `MarkdownContent` or the hooks.
+- **RVP's `tailwind.config.js`.** Both apps are on Tailwind v4, so no version
+  migration is needed. RVP does still carry a JS config (loaded via
+  `@config`) with its own `theme.extend.colors` mapping — once RVP adopts
+  `theme.css`, that block duplicates what the package now provides and
+  should be trimmed down or removed to keep one source of truth.
 - **StatCard.** Both apps have a StatCard-shaped component but the
   implementations diverge more than tokens/hooks/MarkdownContent did — not
   extracted yet. Worth a closer look once the token layer has settled in
@@ -120,5 +150,6 @@ These require GitHub/npm access this environment doesn't have:
    an `NPM_TOKEN` secret with `read:packages`, then `npm install
    @nychealth/design-system`.
 4. In CHP's `globals.css` and RVP's `index.css`, replace the local token
-   blocks with the import shown under "Tokens (CSS)" above, then do a
-   visual QA pass — especially around the brand color decision.
+   blocks with the import shown under "Tokens (CSS)" above, add
+   `data-brand="chp"` / `data-brand="rvp"` to each app's root element (see
+   "Brand variants"), then do a visual QA pass.

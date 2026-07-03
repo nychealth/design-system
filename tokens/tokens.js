@@ -13,6 +13,9 @@
  * • Chart / sparkline / virus colors  → edit `colorScales` below
  * • Health direction (better/worse)   → edit `health` below; keep in sync
  *   with --color-health-* in tokens.css (same hex values, two formats)
+ * • Font sizes                        → edit `typography.fontSize` below;
+ *   keep in sync with the --font-size-* scale in tokens.css (same values,
+ *   px numbers here instead of rem strings — see note above `fontSize`)
  * • UI colors (header, footer, links) → edit tokens.css instead
  */
 
@@ -112,11 +115,33 @@ export const virusAccentColors = {
 
 // ── Spacing / typography / radii / shadows ───────────────────────────────
 const spacing = { xs: "4px", sm: "8px", md: "16px", lg: "24px", xl: "32px" };
+
+// Font sizes mirror the --font-size-* scale in tokens.css (kept in sync
+// manually — see note at the top of this file). Values are unitless px
+// numbers here, not rem strings, because Vega-Lite specs and inline chart
+// styles need literal numbers (e.g. `labelFontSize: 12`).
+//
+// Audited both apps before writing this (2026-07-03): `fontSizeBase` and
+// `fontSizeLg` existed here before but were never actually read anywhere —
+// every real consumer (RVP's vegaTheme.js and its chart components) only
+// used `typography.body`/`typography.heading` for font-family, while chart
+// font sizes were hardcoded as raw numbers scattered across 8 files
+// (10, 11, 12, 13, 14, 16). Those numbers already line up with the CSS
+// scale below (12=label, 13=sm, 14=body, 16=read) — this object gives
+// future chart work a named source instead of magic numbers.
+const fontSize = {
+  label: 12,
+  sm: 13,
+  body: 14,
+  read: 16,
+  lg: 18,
+  "2xl": 20,
+  xl: 30,
+};
 const typography = {
   body: '"Inter", sans-serif',
   heading: '"Inter", sans-serif',
-  fontSizeBase: "14px",
-  fontSizeLg: "18px",
+  fontSize,
   weightBold: "bold",
 };
 const radii = { sm: "4px", md: "6px", lg: "8px" };

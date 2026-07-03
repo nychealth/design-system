@@ -36,16 +36,32 @@
   --font-heading: var(--font-sans);
   --font-bold: "Inter-Bold", sans-serif;
 
-  --font-size-xs: 12px;
-  --font-size-sm: 13px;
-  --font-size-label: 0.75rem;  /* 12px — CHP naming, UI chrome/badges/caps */
-  --font-size-body: 0.875rem;  /* 14px — CHP naming, card body/dropdowns */
-  --font-size-md: 16px;
-  --font-size-read: 1rem;      /* 16px — CHP naming, longer-form reading */
-  --font-size-lg: 18px;
-  --font-size-2xl: 20px;
-  --font-size-xl: 30px;
-  --font-size-mobile-header: 20px;
+  /* Type scale — cleaned up 2026-07-02. This used to define the same pixel
+     value twice under two names (xs/label both 12px, md/read both 16px,
+     2xl/mobile-header both 20px) — leftover from merging CHP's and RVP's
+     scales without reconciling values. Every size is now defined once.
+     Structure follows CHP's semantic naming (label/body/read) since it's
+     the more deliberate, stable scale; RVP's sm/lg/2xl/xl steps are kept
+     where RVP's sizing was preferred or filled a real gap. Old names that
+     were pure duplicates (xs, md, mobile-header) are now aliases so nothing
+     referencing them breaks. */
+  --font-size-label: 0.75rem;    /* 12px — UI chrome, badges, all-caps labels (CHP) */
+  --font-size-xs: var(--font-size-label);  /* alias — was a duplicate 12px value */
+
+  --font-size-sm: 0.8125rem;     /* 13px — secondary/tight copy: chart captions, mobile trend summaries. Kept from RVP — no CHP equivalent at this step, and this is the tighter copy size worth preserving. */
+
+  --font-size-body: 0.875rem;    /* 14px — card body, dropdowns (CHP) */
+
+  --font-size-read: 1rem;        /* 16px — longer-form reading copy (CHP). Matches RVP's own markdown/paragraph body text (markdown.css used 1rem too), so this was already the de facto standard across both apps. */
+  --font-size-md: var(--font-size-read);  /* alias — was a duplicate 16px value */
+
+  --font-size-lg: 1.125rem;      /* 18px — section/content titles, explorer descriptions (RVP) */
+
+  --font-size-2xl: 1.25rem;      /* 20px — overview/about subtitles, mobile header (RVP) */
+  --font-size-mobile-header: var(--font-size-2xl);  /* alias — was a duplicate 20px value */
+
+  --font-size-xl: 1.875rem;      /* 30px — page/overview titles (RVP) */
+
   --line-height-lg: 1.5;
 
   /* ---- Grayscale ---- */
@@ -104,10 +120,10 @@
      RVP's --trend-chip-* and --chip-* below now reference these. */
   --color-health-better: #15803d;
   --color-health-worse: #b91c1c;
-  --color-health-neutral: #4b5563;
+  --color-health-neutral: var(--gray-700);       /* was a re-declared #4b5563 — same value as gray-700 */
   --color-health-better-bg: #f0fdf4;
   --color-health-worse-bg: #fef2f2;
-  --color-health-neutral-bg: #f9fafb;
+  --color-health-neutral-bg: var(--gray-100);    /* was a re-declared #f9fafb — same value as gray-100 */
 
   /* Comparison highlight — must match tokens.js chart colors.
      Confirmed consistent: CHP's --color-comparison (#d97706) already equals
@@ -175,7 +191,7 @@
   --top-bar-logo-filter: none;
   --top-bar-toggle-label: var(--gray-400);
   --top-bar-slider-bg: #c0c7c9;
-  --top-bar-slider-knob: #ffffff;
+  --top-bar-slider-knob: var(--white);           /* was a re-declared #ffffff */
   --top-bar-slider-checked-bg: var(--color-brand);
   --top-bar-slider-knob-checked: #302e2e;
 
@@ -213,7 +229,7 @@
   --explorer-description-size: var(--font-size-lg);
   --explorer-description-font: var(--font-body);
 
-  --portal-section-bg: #F3F4F6;
+  --portal-section-bg: var(--gray-200);          /* was a re-declared #F3F4F6 */
 
   /* Trend chips (general purpose) */
   --chip-inc-text: var(--color-comparison);
@@ -279,9 +295,9 @@
   --info-card-padding: var(--spacing-xl);
 
   /* Vega tooltip */
-  --vgtt-bg: #ffffff;
+  --vgtt-bg: var(--white);                       /* was a re-declared #ffffff */
   --vgtt-fg: #111827;
-  --vgtt-border: #E5E7EB;
+  --vgtt-border: var(--gray-300);                /* was a re-declared #E5E7EB */
   --vgtt-shadow: 0 10px 30px rgba(0, 0, 0, .08);
 
   /* Image filters */

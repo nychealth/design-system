@@ -55,10 +55,21 @@
   --color-gray-800: var(--gray-800);
   --color-gray-900: var(--gray-900);
 
-  /* Typography */
+  /* Typography
+     All 7 canonical steps of the type scale (tokens.css), not just the 3
+     CHP-named ones. sm/lg/xl/2xl below intentionally override Tailwind's
+     built-in text-sm/text-lg/text-xl/text-2xl defaults so the whole scale
+     — not just the custom label/body/read classes — is brand-consistent
+     the moment an app imports this file. Alias tokens (xs, md,
+     mobile-header) are left out here since they're not distinct values;
+     use their canonical name (label, read, 2xl) instead. */
   --font-size-label: var(--font-size-label);
+  --font-size-sm: var(--font-size-sm);
   --font-size-body: var(--font-size-body);
   --font-size-read: var(--font-size-read);
+  --font-size-lg: var(--font-size-lg);
+  --font-size-2xl: var(--font-size-2xl);
+  --font-size-xl: var(--font-size-xl);
   --font-sans: var(--font-sans);
 
   /* Spacing */

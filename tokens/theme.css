@@ -72,14 +72,17 @@
   --font-size-xl: var(--font-size-xl);
   --font-sans: var(--font-sans);
 
-  /* Spacing */
-  --spacing-xs: var(--spacing-xs);
-  --spacing-sm: var(--spacing-sm);
-  --spacing-md: var(--spacing-md);
-  --spacing-lg: var(--spacing-lg);
-  --spacing-xl: var(--spacing-xl);
-  --spacing-2xl: var(--spacing-2xl);
-  --spacing-3xl: var(--spacing-3xl);
+  /* Spacing — deliberately NOT registered as a Tailwind theme namespace here.
+     Confirmed via live bisection in CHP (2026-07-04) that exposing named
+     --spacing-{xs..3xl} keys under @theme inline breaks Tailwind v4's
+     max-width/container utility resolution (max-w-xl collapsed to a near-zero
+     width, causing severe text-wrapping and layout breakage) — root cause
+     not fully isolated, but reproduced reliably by toggling this block alone.
+     Neither CHP nor RVP currently use named spacing utility classes (gap-md,
+     p-2xl, etc.) — every consumer references var(--spacing-*) directly in
+     CSS, which still works fine via tokens.css's plain :root declarations.
+     If named spacing utilities are needed later, investigate further before
+     re-adding this block. */
 
   /* Radius */
   --radius-sm: var(--radius-sm);

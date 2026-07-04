@@ -4,8 +4,13 @@ Shared design tokens, hooks, and components for NYC Health web products.
 Built by reconciling two existing apps — `community-health-profiles` (CHP)
 and `respiratory-virus-data-pages` (RVP) — into a single source of truth.
 
-Status: **v0.1.0, working draft.** Not yet published. See "Open decisions"
-below before publishing v1.0.0.
+Status: **v0.1.2 in progress** (v0.1.0 and v0.1.1 are published on GitHub
+Packages; v0.1.1 has a known layout-breaking bug — see "Known issues" — and
+should not be installed). CHP has the fix verified locally and is otherwise
+integrated; confirm the `v0.1.2` Actions run succeeds and CHP has actually
+pulled it before treating this as done. RVP has not adopted the package yet
+— see "Known issues" and "Open decisions" below before RVP integrates or
+before cutting v1.0.0.
 
 ## What's here
 
@@ -29,8 +34,7 @@ implementation.
 
 ## Install
 
-Not yet published to GitHub Packages (see "Remaining manual steps"). Once
-published:
+Published to GitHub Packages.
 
 ```
 npm install @nychealth/design-system
@@ -42,6 +46,10 @@ Requires a `.npmrc` with the GitHub Packages registry configured:
 @nychealth:registry=https://npm.pkg.github.com
 //npm.pkg.github.com/:_authToken=${NPM_TOKEN}
 ```
+
+`NPM_TOKEN` needs `read:packages` scope for installing (this repo's own
+publish workflow uses a separate token with `write:packages` — don't reuse
+that one in consuming app repos).
 
 ## Usage
 
@@ -126,6 +134,37 @@ Keep app-specific content loading (CHP's flyout `.md` fetches, RVP's
 `## Section` extraction via `resolveContentPath`/`interpolateTokens`) in
 each app, and pass the resolved string in as `content`.
 
+## Known issues
+
+- **Do not register `--spacing-*` inside `theme.css`'s `@theme inline`
+  block.** Confirmed via live bisection in CHP (2026-07-04): exposing named
+  `--spacing-{xs..3xl}` keys as a Tailwind theme namespace broke Tailwind
+  v4's `max-w-*`/container utility resolution — `max-w-xl` collapsed to a
+  near-zero width, which showed up as a header whose subtitle text wrapped
+  one word per line and inflated the header to 5-10x its normal height.
+  Root cause wasn't fully isolated (suspected collision in how Tailwind
+  v4.2.2 resolves named scale entries that share suffixes with its
+  `--container-*`/`--text-*` namespaces, but not proven), but toggling just
+  that block reproduced and fixed the bug reliably. Fix, currently in place:
+  `--spacing-*` values still live in `tokens.css` as plain CSS custom
+  properties (so `var(--spacing-md)` etc. keep working everywhere they're
+  already used) but are **not** re-declared in `theme.css`, so no
+  `p-md`/`gap-2xl`-style Tailwind utility classes exist for them. If you
+  need those utility classes in the future, don't just re-add the block —
+  set up a real Tailwind v4 build (native lightningcss binary matching your
+  OS/arch) and verify `max-w-*` still resolves correctly before shipping it.
+  Cost 3 broken package versions (`0.1.1`, an aborted `0.1.2` attempt) to
+  find — package versions jump from `0.1.0` to `0.1.2` in the registry
+  history for this reason.
+- **`--gray-900` is mislabeled.** It resolves to `#1f2937`, which is
+  actually Tailwind's `gray-800` value — true `gray-900` is `#111827`. CHP's
+  original `--color-text-primary` used `#111827` directly and is currently
+  kept as a local override in CHP's `globals.css` specifically to avoid
+  inheriting this wrong value. Fixing `--gray-900` here would also change
+  `--footer-bg`, `--header-title-color`-adjacent surfaces, `--card-title-color`,
+  and anything else that references `var(--gray-900)` — worth a deliberate
+  pass with visual QA in both apps, not a quick edit.
+
 ## Open decisions (resolve before v1.0.0)
 
 - **RVP's `tailwind.config.js`.** Both apps are on Tailwind v4, so no version
@@ -137,19 +176,38 @@ each app, and pass the resolved string in as `content`.
   implementations diverge more than tokens/hooks/MarkdownContent did — not
   extracted yet. Worth a closer look once the token layer has settled in
   both apps.
+- **RVP's dark mode.** RVP's original `src/styles/tokens.css` has a full
+  `[data-theme="dark"]` block (dark-mode overrides for header, tooltip,
+  chip colors, etc.) that never made it into this package's `tokens.css` —
+  CHP has no dark mode, so it wasn't missed until RVP's turn came up. If RVP
+  drops its local `tokens.css` in favor of this package as-is, it silently
+  loses dark mode. Port that block into this repo's `tokens.css` before RVP
+  fully switches over.
+- **Header/Footer/Modal/TopBar component alias tokens are RVP-only in
+  practice.** `--header-bg`, `--footer-bg`, `--modal-bg`, `--top-bar-*`,
+  `--card-*` in `tokens.css` are consumed by RVP's `Header`/`Footer`/
+  `TopBar`/`InfoModal` components; CHP has no equivalently-named components
+  (it has `PageHeader`, `IntroModal`, `CategoryHeader` instead) and consumes
+  none of these vars. Not a bug, but don't assume this layer is
+  cross-app-tested just because it exists in the shared file.
 
-## Remaining manual steps
+## Integration status
 
-These require GitHub/npm access this environment doesn't have:
-
-1. Push this repo's initial commit to `github.com/nychealth/design-system`.
-2. Add an `NPM_TOKEN` secret (a token with `write:packages`) to this repo's
-   Actions settings, then tag a release (e.g. `v0.1.0`) to trigger
-   `.github/workflows/publish.yml`.
-3. In each consuming app repo (CHP, RVP), add the `.npmrc` block above and
-   an `NPM_TOKEN` secret with `read:packages`, then `npm install
-   @nychealth/design-system`.
-4. In CHP's `globals.css` and RVP's `index.css`, replace the local token
-   blocks with the import shown under "Tokens (CSS)" above, add
-   `data-brand="chp"` / `data-brand="rvp"` to each app's root element (see
-   "Brand variants"), then do a visual QA pass.
+- [x] Repo pushed to `github.com/nychealth/design-system`.
+- [x] `NPM_TOKEN` (`write:packages`) added to this repo's Actions settings;
+      publish workflow (`.github/workflows/publish.yml`) confirmed working
+      for `v0.1.0`. `v0.1.1` published successfully but contains the
+      spacing bug (see "Known issues") — don't install it. `v0.1.2` has the
+      fix committed; confirm its Actions run is green before relying on it.
+- [x] **CHP**: `.npmrc` + `NPM_TOKEN` (`read:packages`) added,
+      `globals.css` imports `tokens.css`/`theme.css`, `data-brand="chp"` set
+      on the root `<html>` element, spacing bug fix verified locally. One
+      local override kept in `globals.css` (`--color-text-primary`) pending
+      the `--gray-900` fix above. [ ] Still needs: confirm CHP has actually
+      installed the published `v0.1.2` (not just the local hand-edited
+      workaround) and re-verify clean.
+- [ ] **RVP**: not started. Before RVP adopts this package: port RVP's dark
+      mode block into `tokens.css` (see "Open decisions"), and expect to
+      trim `theme.extend.colors` out of RVP's `tailwind.config.js` once its
+      `globals.css`/`index.css` imports `theme.css`.
+- [ ] Visual QA pass in both apps once RVP is wired up.
